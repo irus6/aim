@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(dasom, 1.0.1, https://github.com/cogniti/dasom/issues)
+AC_INIT(aim, 0.1, https://github.com/cogniti/aim/issues)
 
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
@@ -19,20 +19,20 @@ dnl Internationalization
 dnl ***************************************************************************
 
 IT_PROG_INTLTOOL(0.35.0)
-GETTEXT_PACKAGE=dasom
+GETTEXT_PACKAGE=aim
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [gettext package name])
 AC_SUBST(GETTEXT_PACKAGE)
 AM_GLIB_GNU_GETTEXT
-AM_GLIB_DEFINE_LOCALEDIR(DASOM_LOCALE_DIR)
+AM_GLIB_DEFINE_LOCALEDIR(AIM_LOCALE_DIR)
 
 LT_INIT([disable-static])
 
-LIBDASOM_REQUIRES="glib-2.0 gio-2.0 gio-unix-2.0 gmodule-2.0 gobject-introspection-1.0 x11"
-LIBDASOM_PRIVATE="gtk+-3.0"
-AC_SUBST(LIBDASOM_REQUIRES)
-AC_SUBST(LIBDASOM_PRIVATE)
+LIBAIM_REQUIRES="glib-2.0 gio-2.0 gio-unix-2.0 gmodule-2.0 gobject-introspection-1.0 x11"
+LIBAIM_PRIVATE="gtk+-3.0"
+AC_SUBST(LIBAIM_REQUIRES)
+AC_SUBST(LIBAIM_PRIVATE)
 
-PKG_CHECK_MODULES(LIBDASOM_DEPS, [$LIBDASOM_REQUIRES $LIBDASOM_PRIVATE])
+PKG_CHECK_MODULES(LIBAIM_DEPS, [$LIBAIM_REQUIRES $LIBAIM_PRIVATE])
 PKG_CHECK_MODULES(GLIB, [glib-2.0])
 PKG_CHECK_MODULES(GIO, [gio-2.0])
 PKG_CHECK_MODULES(GOBJECT, [gobject-2.0])
@@ -123,17 +123,17 @@ if test "x$RSVG_CONVERT" = "xno"; then
 fi
 
 dnl ***************************************************************************
-dnl Build dasom-indicator by default
+dnl Build aim-indicator by default
 dnl ***************************************************************************
 
-AC_ARG_ENABLE([dasom-indicator],
-  AS_HELP_STRING([--disable-dasom-indicator], [Disable dasom-indicator]))
+AC_ARG_ENABLE([aim-indicator],
+  AS_HELP_STRING([--disable-aim-indicator], [Disable aim-indicator]))
 
-AS_IF([test "x$enable_dasom_indicator" != "xno"],
+AS_IF([test "x$enable_aim_indicator" != "xno"],
   [PKG_CHECK_MODULES(APPINDICATOR3, [appindicator3-0.1])])
 
-AM_CONDITIONAL([ENABLE_DASOM_INDICATOR],
-               [test "$enable_dasom_indicator" != "no"])
+AM_CONDITIONAL([ENABLE_AIM_INDICATOR],
+               [test "$enable_aim_indicator" != "no"])
 
 GLIB_GSETTINGS
 GOBJECT_INTROSPECTION_CHECK([0.10.1])
@@ -147,15 +147,15 @@ AC_OUTPUT([
   data/Makefile
   data/im-config/Makefile
   data/icons/Makefile
-  libdasom/Makefile
-  libdasom/dasom.pc
+  libaim/Makefile
+  libaim/aim.pc
   modules/Makefile
   modules/clients/Makefile
   modules/clients/gtk/Makefile
   modules/clients/qt4/Makefile
   modules/clients/qt5/Makefile
   modules/engines/Makefile
-  modules/engines/dasom-jeongeum/Makefile
+  modules/engines/aim-jeongeum/Makefile
   daemon/Makefile
   po/Makefile.in
 ])

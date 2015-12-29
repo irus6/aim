@@ -1,4 +1,4 @@
-SUBDIRS = libdasom modules daemon agents po data
+SUBDIRS = libaim modules daemon agents po data
 
 ACLOCAL_AMFLAGS = -I m4
 

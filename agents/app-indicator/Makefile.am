@@ -1,13 +1,13 @@
-bin_PROGRAMS = dasom-indicator
+bin_PROGRAMS = aim-indicator
 
-dasom_indicator_SOURCES = dasom-indicator.c
+aim_indicator_SOURCES = aim-indicator.c
 
-dasom_indicator_CFLAGS = \
+aim_indicator_CFLAGS = \
 	-Wall \
 	-Werror \
-	-I$(top_srcdir)/libdasom \
-	-DDASOM_COMPILATION \
-	-DG_LOG_DOMAIN=\"dasom\" \
+	-I$(top_srcdir)/libaim \
+	-DAIM_COMPILATION \
+	-DG_LOG_DOMAIN=\"aim\" \
 	$(GLIB_CFLAGS) \
 	$(GIO_CFLAGS) \
 	$(GIO_UNIX_CFLAGS) \
@@ -15,10 +15,9 @@ dasom_indicator_CFLAGS = \
 	$(GTK3_CFLAGS) \
 	$(APPINDICATOR3_CFLAGS)
 
-dasom_indicator_LDADD = \
-	$(top_builddir)/libdasom/libdasom.la
+aim_indicator_LDADD = $(top_builddir)/libaim/libaim.la
 
-dasom_indicator_LDFLAGS = \
+aim_indicator_LDFLAGS = \
 	$(GLIB_LIBS) \
 	$(GIO_LIBS) \
 	$(GIO_UNIX_LIBS) \

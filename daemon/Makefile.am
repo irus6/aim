@@ -1,18 +1,17 @@
-bin_PROGRAMS = dasom-daemon
+bin_PROGRAMS = aim-daemon
 
-dasom_daemon_SOURCES = dasom-daemon.c
+aim_daemon_SOURCES = aim-daemon.c
 
-dasom_daemon_CFLAGS = \
+aim_daemon_CFLAGS = \
 	-Wall \
 	-Werror \
-	-I$(top_srcdir)/libdasom \
-	-DDASOM_COMPILATION \
-	-DG_LOG_DOMAIN=\"dasom\" \
-	-DDASOM_MODULE_DIR=\"$(libdir)/dasom/modules\" \
-	$(LIBDASOM_DEPS_CFLAGS)
+	-I$(top_srcdir)/libaim \
+	-DAIM_COMPILATION \
+	-DG_LOG_DOMAIN=\"aim\" \
+	-DAIM_MODULE_DIR=\"$(libdir)/aim/modules\" \
+	$(LIBAIM_DEPS_CFLAGS)
 
-dasom_daemon_LDFLAGS = $(GOBJECT_LIBS)
-dasom_daemon_LDADD = \
-	$(top_builddir)/libdasom/libdasom.la
+aim_daemon_LDFLAGS = $(GOBJECT_LIBS)
+aim_daemon_LDADD   = $(top_builddir)/libaim/libaim.la
 
 DISTCLEANFILES = Makefile.in

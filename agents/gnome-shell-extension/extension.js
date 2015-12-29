@@ -3,7 +3,7 @@
 const Lang           = imports.lang;
 const St             = imports.gi.St;
 const Clutter        = imports.gi.Clutter;
-const Dasom          = imports.gi.Dasom;
+const Aim            = imports.gi.Aim;
 const Main           = imports.ui.main;
 const PanelMenu      = imports.ui.panelMenu;
 const PopupMenu      = imports.ui.popupMenu;
@@ -12,7 +12,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Gettext        = imports.gettext;
 const _ = Gettext.gettext;
 
-let dasom_agent, dasom_menu, extension;
+let aim_agent, aim_menu, extension;
 
 const AboutDialog = new Lang.Class({
   Name: "AboutDialog",
@@ -28,12 +28,12 @@ const AboutDialog = new Lang.Class({
       default: true }]);
       let version_text  = extension.metadata['version'];
       let title_label   = new St.Label({ style_class: 'title-label',
-                                         text: _("Dasom Indicator"),
+                                         text: _("AIM Indicator"),
                                          x_expand: true,
                                          x_align: Clutter.ActorAlign.CENTER});
       let spacing       = new St.Label({ text: "\n" });
       let message_label = new St.Label({
-        text: _("dasom" + " " + version_text) });
+        text: _("aim" + " " + version_text) });
       let content_layout = new St.BoxLayout({ vertical: true });
 
       content_layout.add(title_label);
@@ -57,15 +57,15 @@ function on_about()
   dialog.open()
 }
 
-const DasomMenu = new Lang.Class({
-  Name: 'DasomMenu',
+const AimMenu = new Lang.Class({
+  Name: 'AimMenu',
   Extends: PanelMenu.Button,
 
   _init: function() {
-    this.parent(0.0, _("Dasom"));
+    this.parent(0.0, _("AIM"));
 
     this._hbox = new St.BoxLayout({ style_class: 'panel-status-menu-box' });
-    this._label = new St.Label({ text: _("Dasom"),
+    this._label = new St.Label({ text: _("AIM"),
                                  y_expand: true,
                                  y_align: Clutter.ActorAlign.CENTER });
 
@@ -97,39 +97,39 @@ function enable()
 {
   let child;
 
-  dasom_menu = new DasomMenu;
+  aim_menu = new AimMenu;
 
-  Main.panel.addToStatusArea('dasom-agent-extension', dasom_menu, 0, 'right');
+  Main.panel.addToStatusArea('aim-agent-extension', aim_menu, 0, 'right');
 
-  dasom_agent = new Dasom.Agent;
+  aim_agent = new Aim.Agent;
 
-  dasom_agent.connect('engine-changed', function(agent, text) {
-    child = dasom_menu._hbox.get_child_at_index (0);
+  aim_agent.connect('engine-changed', function(agent, text) {
+    child = aim_menu._hbox.get_child_at_index (0);
 
     if (text == 'focus-out')
     {
-      if (child != dasom_menu._icon)
-        dasom_menu._hbox.replace_child (child, dasom_menu._icon);
+      if (child != aim_menu._icon)
+        aim_menu._hbox.replace_child (child, aim_menu._icon);
     }
     else
     {
-      if (dasom_menu._label.text != text)
-        dasom_menu._label.text = text;
+      if (aim_menu._label.text != text)
+        aim_menu._label.text = text;
 
-      if (child != dasom_menu._label)
-        dasom_menu._hbox.replace_child (child, dasom_menu._label);
+      if (child != aim_menu._label)
+        aim_menu._hbox.replace_child (child, aim_menu._label);
     }
   });
 
-  dasom_agent.connect('disconnected', function(agent) {
-    child = dasom_menu._hbox.get_child_at_index (0);
-    dasom_menu._hbox.replace_child (child, dasom_menu._warning_icon);
+  aim_agent.connect('disconnected', function(agent) {
+    child = aim_menu._hbox.get_child_at_index (0);
+    aim_menu._hbox.replace_child (child, aim_menu._warning_icon);
   });
 
-  dasom_agent.connect_to_server();
+  aim_agent.connect_to_server();
 }
 
 function disable()
 {
-  dasom_menu.destroy();
+  aim_menu.destroy();
 }

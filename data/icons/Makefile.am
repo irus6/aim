@@ -2,10 +2,10 @@ icon_themedir = $(datadir)/icons/hicolor
 
 status_scalable_icondir   = $(icon_themedir)/scalable/status/
 status_scalable_icon_DATA = \
-	scalable/dasom-indicator.svg \
-	scalable/dasom-indicator-warning.svg \
-	scalable/dasom-indicator-en.svg \
-	scalable/dasom-indicator-ko.svg
+	scalable/aim-indicator.svg \
+	scalable/aim-indicator-warning.svg \
+	scalable/aim-indicator-en.svg \
+	scalable/aim-indicator-ko.svg
 
 # 22x22 icons
 

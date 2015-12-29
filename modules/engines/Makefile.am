@@ -1,3 +1,3 @@
-SUBDIRS = dasom-jeongeum
+SUBDIRS = aim-jeongeum
 
 DISTCLEANFILES = Makefile.in
