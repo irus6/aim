@@ -155,7 +155,7 @@ AC_OUTPUT([
   modules/clients/qt4/Makefile
   modules/clients/qt5/Makefile
   modules/engines/Makefile
-  modules/engines/aim-jeongeum/Makefile
+  modules/engines/aim-libhangul/Makefile
   daemon/Makefile
   po/Makefile.in
 ])

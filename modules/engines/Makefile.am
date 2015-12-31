@@ -1,3 +1,3 @@
-SUBDIRS = aim-jeongeum
+SUBDIRS = aim-libhangul
 
 DISTCLEANFILES = Makefile.in

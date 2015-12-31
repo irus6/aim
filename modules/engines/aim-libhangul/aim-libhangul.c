@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-  */
 /*
- * aim-jeongeum.c
+ * aim-libhangul.c
  * This file is part of AIM.
  *
  * Copyright (C) 2015 Hodong Kim <hodong@cogno.org>
@@ -23,17 +23,17 @@
 #include <hangul.h>
 #include <stdlib.h>
 
-#define AIM_TYPE_JEONGEUM             (aim_jeongeum_get_type ())
-#define AIM_JEONGEUM(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), AIM_TYPE_JEONGEUM, AimJeongeum))
-#define AIM_JEONGEUM_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), AIM_TYPE_JEONGEUM, AimJeongeumClass))
-#define AIM_IS_JEONGEUM(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), AIM_TYPE_JEONGEUM))
-#define AIM_IS_JEONGEUM_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), AIM_TYPE_JEONGEUM))
-#define AIM_JEONGEUM_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), AIM_TYPE_JEONGEUM, AimJeongeumClass))
+#define AIM_TYPE_LIBHANGUL             (aim_libhangul_get_type ())
+#define AIM_LIBHANGUL(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), AIM_TYPE_LIBHANGUL, AimLibhangul))
+#define AIM_LIBHANGUL_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), AIM_TYPE_LIBHANGUL, AimLibhangulClass))
+#define AIM_IS_LIBHANGUL(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), AIM_TYPE_LIBHANGUL))
+#define AIM_IS_LIBHANGUL_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), AIM_TYPE_LIBHANGUL))
+#define AIM_LIBHANGUL_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), AIM_TYPE_LIBHANGUL, AimLibhangulClass))
 
-typedef struct _AimJeongeum      AimJeongeum;
-typedef struct _AimJeongeumClass AimJeongeumClass;
+typedef struct _AimLibhangul      AimLibhangul;
+typedef struct _AimLibhangulClass AimLibhangulClass;
 
-struct _AimJeongeum
+struct _AimLibhangul
 {
   AimEngine parent_instance;
 
@@ -59,13 +59,13 @@ struct _AimJeongeum
   gboolean            workaround_for_wine;
 };
 
-struct _AimJeongeumClass
+struct _AimLibhangulClass
 {
   /*< private >*/
   AimEngineClass parent_class;
 };
 
-G_DEFINE_DYNAMIC_TYPE (AimJeongeum, aim_jeongeum, AIM_TYPE_ENGINE);
+G_DEFINE_DYNAMIC_TYPE (AimLibhangul, aim_libhangul, AIM_TYPE_ENGINE);
 
 /* only for PC keyboards */
 guint aim_event_keycode_to_qwerty_keyval (const AimEvent *event)
@@ -123,89 +123,87 @@ guint aim_event_keycode_to_qwerty_keyval (const AimEvent *event)
 }
 
 static void
-aim_jeongeum_update_preedit (AimEngine     *engine,
-                             AimConnection *target,
-                             gchar         *new_preedit)
+aim_libhangul_update_preedit (AimEngine     *engine,
+                              AimConnection *target,
+                              gchar         *new_preedit)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
-  AimJeongeum *jeongeum = AIM_JEONGEUM (engine);
+  AimLibhangul *hangul = AIM_LIBHANGUL (engine);
 
   /* preedit-start */
-  if (jeongeum->preedit_state == AIM_PREEDIT_STATE_END &&
-      new_preedit[0] != 0)
+  if (hangul->preedit_state == AIM_PREEDIT_STATE_END && new_preedit[0] != 0)
   {
-    jeongeum->preedit_state = AIM_PREEDIT_STATE_START;
+    hangul->preedit_state = AIM_PREEDIT_STATE_START;
     aim_engine_emit_preedit_start (engine, target);
   }
 
   /* preedit-changed */
-  if (jeongeum->preedit_string[0] != 0 || new_preedit[0] != 0)
+  if (hangul->preedit_string[0] != 0 || new_preedit[0] != 0)
   {
-    g_free (jeongeum->preedit_string);
-    jeongeum->preedit_string = new_preedit;
+    g_free (hangul->preedit_string);
+    hangul->preedit_string = new_preedit;
     aim_engine_emit_preedit_changed (engine, target,
-                                     jeongeum->preedit_string,
-                                     g_utf8_strlen (jeongeum->preedit_string,
+                                     hangul->preedit_string,
+                                     g_utf8_strlen (hangul->preedit_string,
                                                     -1));
   }
   else
     g_free (new_preedit);
 
   /* preedit-end */
-  if (jeongeum->preedit_state == AIM_PREEDIT_STATE_START &&
-      jeongeum->preedit_string[0] == 0)
+  if (hangul->preedit_state == AIM_PREEDIT_STATE_START &&
+      hangul->preedit_string[0] == 0)
   {
-    jeongeum->preedit_state = AIM_PREEDIT_STATE_END;
+    hangul->preedit_state = AIM_PREEDIT_STATE_END;
     aim_engine_emit_preedit_end (engine, target);
   }
 }
 
 void
-aim_jeongeum_emit_commit (AimEngine     *engine,
-                          AimConnection *target,
-                          const gchar   *text)
+aim_libhangul_emit_commit (AimEngine     *engine,
+                           AimConnection *target,
+                           const gchar   *text)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
-  AimJeongeum *jeongeum = AIM_JEONGEUM (engine);
-  jeongeum->is_committing = TRUE;
+  AimLibhangul *hangul = AIM_LIBHANGUL (engine);
+  hangul->is_committing = TRUE;
   aim_engine_emit_commit (engine, target, text);
-  jeongeum->is_committing = FALSE;
+  hangul->is_committing = FALSE;
 }
 
 void
-aim_jeongeum_reset (AimEngine *engine, AimConnection *target)
+aim_libhangul_reset (AimEngine *engine, AimConnection *target)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
   g_return_if_fail (AIM_IS_ENGINE (engine));
 
-  AimJeongeum *jeongeum = AIM_JEONGEUM (engine);
+  AimLibhangul *hangul = AIM_LIBHANGUL (engine);
 
   /* workaround: avoid reset called by commit callback in application */
-  if (G_UNLIKELY (jeongeum->avoid_reset_in_commit_cb &&
-                  jeongeum->is_committing))
+  if (G_UNLIKELY (hangul->avoid_reset_in_commit_cb && hangul->is_committing))
     return;
 
   aim_engine_hide_candidate_window (engine);
-  jeongeum->is_candidate_mode = FALSE;
+  hangul->is_candidate_mode = FALSE;
 
   const ucschar *flush;
-  flush = hangul_ic_flush (jeongeum->context);
+  flush = hangul_ic_flush (hangul->context);
 
   if (flush[0] != 0)
   {
     gchar *text = g_ucs4_to_utf8 (flush, -1, NULL, NULL, NULL);
-    aim_jeongeum_emit_commit (engine, target, text);
+    aim_libhangul_emit_commit (engine, target, text);
     g_free (text);
   }
 
-  aim_jeongeum_update_preedit (engine, target, g_strdup (""));
+  aim_libhangul_update_preedit (engine, target, g_strdup (""));
 }
 
 void
-aim_jeongeum_focus_in (AimEngine *engine)
+aim_libhangul_focus_in (AimEngine *engine)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
@@ -213,13 +211,13 @@ aim_jeongeum_focus_in (AimEngine *engine)
 }
 
 void
-aim_jeongeum_focus_out (AimEngine *engine, AimConnection  *target)
+aim_libhangul_focus_out (AimEngine *engine, AimConnection  *target)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
   g_return_if_fail (AIM_IS_ENGINE (engine));
 
-  aim_jeongeum_reset (engine, target);
+  aim_libhangul_reset (engine, target);
 }
 
 static void
@@ -227,31 +225,31 @@ on_candidate_clicked (AimEngine *engine, AimConnection *target, gchar *text)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
-  AimJeongeum *jeongeum = AIM_JEONGEUM (engine);
+  AimLibhangul *hangul = AIM_LIBHANGUL (engine);
 
   if (text)
   {
     /* hangul_ic 내부의 commit text가 사라집니다 */
-    hangul_ic_reset (jeongeum->context);
-    aim_jeongeum_emit_commit (engine, target, text);
-    aim_jeongeum_update_preedit (engine, target, g_strdup (""));
+    hangul_ic_reset (hangul->context);
+    aim_libhangul_emit_commit (engine, target, text);
+    aim_libhangul_update_preedit (engine, target, g_strdup (""));
   }
 
-  aim_engine_hide_candidate_window (AIM_ENGINE (jeongeum));
-  jeongeum->is_candidate_mode = FALSE;
+  aim_engine_hide_candidate_window (AIM_ENGINE (hangul));
+  hangul->is_candidate_mode = FALSE;
 }
 
 static gboolean
-aim_jeongeum_filter_leading_consonant (AimEngine     *engine,
-                                       AimConnection *target,
-                                       guint          keyval)
+aim_libhangul_filter_leading_consonant (AimEngine     *engine,
+                                        AimConnection *target,
+                                        guint          keyval)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
-  AimJeongeum *jeongeum = AIM_JEONGEUM (engine);
+  AimLibhangul *hangul = AIM_LIBHANGUL (engine);
 
   const ucschar *ucs_preedit;
-  ucs_preedit = hangul_ic_get_preedit_string (jeongeum->context);
+  ucs_preedit = hangul_ic_get_preedit_string (hangul->context);
 
   /* check ㄱ ㄷ ㅂ ㅅ ㅈ */
   if ((keyval == 'r' && ucs_preedit[0] == 0x3131 && ucs_preedit[1] == 0) ||
@@ -261,11 +259,11 @@ aim_jeongeum_filter_leading_consonant (AimEngine     *engine,
       (keyval == 'w' && ucs_preedit[0] == 0x3148 && ucs_preedit[1] == 0))
   {
     gchar *preedit = g_ucs4_to_utf8 (ucs_preedit, -1, NULL, NULL, NULL);
-    aim_jeongeum_emit_commit (engine, target, preedit);
+    aim_libhangul_emit_commit (engine, target, preedit);
     g_free (preedit);
     aim_engine_emit_preedit_changed (engine, target,
-                                     jeongeum->preedit_string,
-                                     g_utf8_strlen (jeongeum->preedit_string,
+                                     hangul->preedit_string,
+                                     g_utf8_strlen (hangul->preedit_string,
                                                     -1));
     return TRUE;
   }
@@ -274,16 +272,16 @@ aim_jeongeum_filter_leading_consonant (AimEngine     *engine,
 }
 
 gboolean
-aim_jeongeum_filter_event (AimEngine     *engine,
-                           AimConnection *target,
-                           AimEvent      *event)
+aim_libhangul_filter_event (AimEngine     *engine,
+                            AimConnection *target,
+                            AimEvent      *event)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
   guint    keyval;
   gboolean retval = FALSE;
 
-  AimJeongeum *jeongeum = AIM_JEONGEUM (engine);
+  AimLibhangul *hangul = AIM_LIBHANGUL (engine);
 
   if (event->key.type   == AIM_EVENT_KEY_RELEASE ||
       event->key.keyval == AIM_KEY_Shift_L       ||
@@ -292,21 +290,21 @@ aim_jeongeum_filter_event (AimEngine     *engine,
 
   if (event->key.state & (AIM_CONTROL_MASK | AIM_MOD1_MASK))
   {
-    aim_jeongeum_reset (engine, target);
+    aim_libhangul_reset (engine, target);
     return FALSE;
   }
 
-  if (aim_event_matches (event, (const AimKey **) jeongeum->hangul_keys))
+  if (aim_event_matches (event, (const AimKey **) hangul->hangul_keys))
   {
-    aim_jeongeum_reset (engine, target);
-    jeongeum->is_english_mode = !jeongeum->is_english_mode;
+    aim_libhangul_reset (engine, target);
+    hangul->is_english_mode = !hangul->is_english_mode;
     aim_engine_emit_engine_changed (engine, target);
     return TRUE;
   }
 
-  if (jeongeum->is_english_mode)
+  if (hangul->is_english_mode)
   {
-    if (G_UNLIKELY ((jeongeum->workaround_for_wine &&
+    if (G_UNLIKELY ((hangul->workaround_for_wine &&
                      target->type == AIM_CONNECTION_XIM)))
       return FALSE;
     else
@@ -314,16 +312,16 @@ aim_jeongeum_filter_event (AimEngine     *engine,
   }
 
   if (G_UNLIKELY (aim_event_matches (event,
-                  (const AimKey **) jeongeum->hanja_keys)))
+                  (const AimKey **) hangul->hanja_keys)))
   {
-    if (jeongeum->is_candidate_mode == FALSE)
+    if (hangul->is_candidate_mode == FALSE)
     {
-      jeongeum->is_candidate_mode = TRUE;
-      HanjaList *list = hanja_table_match_exact (jeongeum->hanja_table,
-                                                 jeongeum->preedit_string);
+      hangul->is_candidate_mode = TRUE;
+      HanjaList *list = hanja_table_match_exact (hangul->hanja_table,
+                                                 hangul->preedit_string);
       if (list == NULL)
-        list = hanja_table_match_exact (jeongeum->symbol_table,
-                                        jeongeum->preedit_string);
+        list = hanja_table_match_exact (hangul->symbol_table,
+                                        hangul->preedit_string);
 
       gint list_len = hanja_list_get_size (list);
       gchar **strv = g_malloc0 ((list_len + 1) * sizeof (gchar *));
@@ -346,14 +344,14 @@ aim_jeongeum_filter_event (AimEngine     *engine,
     }
     else
     {
-      jeongeum->is_candidate_mode = FALSE;
+      hangul->is_candidate_mode = FALSE;
       aim_engine_hide_candidate_window (engine);
     }
 
     return TRUE;
   }
 
-  if (G_UNLIKELY (jeongeum->is_candidate_mode))
+  if (G_UNLIKELY (hangul->is_candidate_mode))
   {
     switch (event->key.keyval)
     {
@@ -383,7 +381,7 @@ aim_jeongeum_filter_event (AimEngine     *engine,
         break;
       case AIM_KEY_Escape:
         aim_engine_hide_candidate_window (engine);
-        jeongeum->is_candidate_mode = FALSE;
+        hangul->is_candidate_mode = FALSE;
         break;
       default:
         break;
@@ -397,13 +395,13 @@ aim_jeongeum_filter_event (AimEngine     *engine,
 
   if (G_UNLIKELY (event->key.keyval == AIM_KEY_BackSpace))
   {
-    retval = hangul_ic_backspace (jeongeum->context);
+    retval = hangul_ic_backspace (hangul->context);
 
     if (retval)
     {
-      ucs_preedit = hangul_ic_get_preedit_string (jeongeum->context);
+      ucs_preedit = hangul_ic_get_preedit_string (hangul->context);
       gchar *new_preedit = g_ucs4_to_utf8 (ucs_preedit, -1, NULL, NULL, NULL);
-      aim_jeongeum_update_preedit (engine, target, new_preedit);
+      aim_libhangul_update_preedit (engine, target, new_preedit);
     }
 
     return retval;
@@ -411,29 +409,29 @@ aim_jeongeum_filter_event (AimEngine     *engine,
 
   keyval = aim_event_keycode_to_qwerty_keyval (event);
 
-  if (!jeongeum->is_double_consonant_rule &&
-      (g_strcmp0 (jeongeum->layout, "2") == 0) && /* 두벌식에만 적용 */
-      aim_jeongeum_filter_leading_consonant (engine, target, keyval))
+  if (!hangul->is_double_consonant_rule &&
+      (g_strcmp0 (hangul->layout, "2") == 0) && /* 두벌식에만 적용 */
+      aim_libhangul_filter_leading_consonant (engine, target, keyval))
     return TRUE;
 
-  retval = hangul_ic_process (jeongeum->context, keyval);
+  retval = hangul_ic_process (hangul->context, keyval);
 
-  ucs_commit  = hangul_ic_get_commit_string  (jeongeum->context);
-  ucs_preedit = hangul_ic_get_preedit_string (jeongeum->context);
+  ucs_commit  = hangul_ic_get_commit_string  (hangul->context);
+  ucs_preedit = hangul_ic_get_preedit_string (hangul->context);
 
   gchar *new_commit  = g_ucs4_to_utf8 (ucs_commit,  -1, NULL, NULL, NULL);
 
   if (ucs_commit[0] != 0)
-    aim_jeongeum_emit_commit (engine, target, new_commit);
+    aim_libhangul_emit_commit (engine, target, new_commit);
 
   g_free (new_commit);
 
   gchar *new_preedit = g_ucs4_to_utf8 (ucs_preedit, -1, NULL, NULL, NULL);
-  aim_jeongeum_update_preedit (engine, target, new_preedit);
+  aim_libhangul_update_preedit (engine, target, new_preedit);
 
   if (retval)
     return TRUE;
-  else if (G_UNLIKELY ((jeongeum->workaround_for_wine &&
+  else if (G_UNLIKELY ((hangul->workaround_for_wine &&
                         target->type == AIM_CONNECTION_XIM)))
     return FALSE;
 
@@ -478,7 +476,7 @@ aim_jeongeum_filter_event (AimEngine     *engine,
   if (c)
   {
     gchar *str = g_strdup_printf ("%c", c);
-    aim_jeongeum_emit_commit (engine, target, str);
+    aim_libhangul_emit_commit (engine, target, str);
     g_free (str);
     retval = TRUE;
   }
@@ -487,23 +485,23 @@ aim_jeongeum_filter_event (AimEngine     *engine,
 }
 
 static void
-on_changed_layout (GSettings   *settings,
-                   gchar       *key,
-                   AimJeongeum *jeongeum)
+on_changed_layout (GSettings    *settings,
+                   gchar        *key,
+                   AimLibhangul *hangul)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
-  g_free (jeongeum->layout);
-  jeongeum->layout = NULL;
-  jeongeum->layout = g_settings_get_string (settings, key);
-  g_return_if_fail (jeongeum->layout != NULL);
-  hangul_ic_select_keyboard (jeongeum->context, jeongeum->layout);
+  g_free (hangul->layout);
+  hangul->layout = NULL;
+  hangul->layout = g_settings_get_string (settings, key);
+  g_return_if_fail (hangul->layout != NULL);
+  hangul_ic_select_keyboard (hangul->context, hangul->layout);
 }
 
 static void
-on_changed_keys (GSettings   *settings,
-                 gchar       *key,
-                 AimJeongeum *jeongeum)
+on_changed_keys (GSettings    *settings,
+                 gchar        *key,
+                 AimLibhangul *hangul)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
@@ -511,215 +509,212 @@ on_changed_keys (GSettings   *settings,
 
   if (g_strcmp0 (key, "hangul-keys") == 0)
   {
-    aim_key_freev (jeongeum->hangul_keys);
-    jeongeum->hangul_keys = aim_key_newv ((const gchar **) keys);
+    aim_key_freev (hangul->hangul_keys);
+    hangul->hangul_keys = aim_key_newv ((const gchar **) keys);
   }
   else if (g_strcmp0 (key, "hanja-keys") == 0)
   {
-    aim_key_freev (jeongeum->hanja_keys);
-    jeongeum->hanja_keys = aim_key_newv ((const gchar **) keys);
+    aim_key_freev (hangul->hanja_keys);
+    hangul->hanja_keys = aim_key_newv ((const gchar **) keys);
   }
 
   g_strfreev (keys);
 }
 
 static void
-on_changed_double_consonant_rule (GSettings   *settings,
-                                  gchar       *key,
-                                  AimJeongeum *jeongeum)
+on_changed_double_consonant_rule (GSettings    *settings,
+                                  gchar        *key,
+                                  AimLibhangul *hangul)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
-  jeongeum->is_double_consonant_rule = g_settings_get_boolean (settings, key);
+  hangul->is_double_consonant_rule = g_settings_get_boolean (settings, key);
 }
 
 static void
-on_changed_avoid_reset_in_commit_cb (GSettings   *settings,
-                                     gchar       *key,
-                                     AimJeongeum *jeongeum)
+on_changed_avoid_reset_in_commit_cb (GSettings    *settings,
+                                     gchar        *key,
+                                     AimLibhangul *hangul)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
-  jeongeum->avoid_reset_in_commit_cb = g_settings_get_boolean (settings, key);
+  hangul->avoid_reset_in_commit_cb = g_settings_get_boolean (settings, key);
 }
 
 static void
-on_changed_workaround_for_wine (GSettings   *settings,
-                                gchar       *key,
-                                AimJeongeum *jeongeum)
+on_changed_workaround_for_wine (GSettings    *settings,
+                                gchar        *key,
+                                AimLibhangul *hangul)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
-  jeongeum->workaround_for_wine = g_settings_get_boolean (settings, key);
+  hangul->workaround_for_wine = g_settings_get_boolean (settings, key);
 }
 
 static void
-aim_jeongeum_init (AimJeongeum *jeongeum)
+aim_libhangul_init (AimLibhangul *hangul)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
   gchar **hangul_keys, **hanja_keys;
 
-  jeongeum->settings = g_settings_new ("org.aim.engines.jeongeum");
+  hangul->settings = g_settings_new ("org.aim.engines.libhangul");
 
-  jeongeum->layout = g_settings_get_string (jeongeum->settings, "layout");
-  jeongeum->is_double_consonant_rule =
-    g_settings_get_boolean (jeongeum->settings, "double-consonant-rule");
-  jeongeum->avoid_reset_in_commit_cb =
-    g_settings_get_boolean (jeongeum->settings,
+  hangul->layout = g_settings_get_string (hangul->settings, "layout");
+  hangul->is_double_consonant_rule =
+    g_settings_get_boolean (hangul->settings, "double-consonant-rule");
+  hangul->avoid_reset_in_commit_cb =
+    g_settings_get_boolean (hangul->settings,
                             "avoid-reset-in-commit-callback");
-  jeongeum->workaround_for_wine =
-    g_settings_get_boolean (jeongeum->settings, "workaround-for-wine");
+  hangul->workaround_for_wine =
+    g_settings_get_boolean (hangul->settings, "workaround-for-wine");
 
-  hangul_keys = g_settings_get_strv   (jeongeum->settings, "hangul-keys");
-  hanja_keys  = g_settings_get_strv   (jeongeum->settings, "hanja-keys");
+  hangul_keys = g_settings_get_strv (hangul->settings, "hangul-keys");
+  hanja_keys  = g_settings_get_strv (hangul->settings, "hanja-keys");
 
-  jeongeum->hangul_keys = aim_key_newv ((const gchar **) hangul_keys);
-  jeongeum->hanja_keys  = aim_key_newv ((const gchar **) hanja_keys);
-  jeongeum->context = hangul_ic_new (jeongeum->layout);
-  jeongeum->id      = g_strdup ("aim-jeongeum");
-  jeongeum->en_name = g_strdup ("en");
-  jeongeum->ko_name = g_strdup ("ko");
-  jeongeum->is_english_mode = TRUE;
-  jeongeum->preedit_string = g_strdup ("");
-  jeongeum->hanja_table  = hanja_table_load (NULL);
-  jeongeum->symbol_table = hanja_table_load ("/usr/share/libhangul/hanja/mssymbol.txt"); /* FIXME */
+  hangul->hangul_keys = aim_key_newv ((const gchar **) hangul_keys);
+  hangul->hanja_keys  = aim_key_newv ((const gchar **) hanja_keys);
+  hangul->context = hangul_ic_new (hangul->layout);
+  hangul->id      = g_strdup ("aim-libhangul");
+  hangul->en_name = g_strdup ("en");
+  hangul->ko_name = g_strdup ("ko");
+  hangul->is_english_mode = TRUE;
+  hangul->preedit_string = g_strdup ("");
+  hangul->hanja_table  = hanja_table_load (NULL);
+  hangul->symbol_table = hanja_table_load ("/usr/share/libhangul/hanja/mssymbol.txt"); /* FIXME */
 
   g_strfreev (hangul_keys);
   g_strfreev (hanja_keys);
 
-  g_signal_connect (jeongeum->settings, "changed::layout",
-                    G_CALLBACK (on_changed_layout), jeongeum);
-  g_signal_connect (jeongeum->settings, "changed::hangul-keys",
-                    G_CALLBACK (on_changed_keys), jeongeum);
-  g_signal_connect (jeongeum->settings, "changed::hanja-keys",
-                    G_CALLBACK (on_changed_keys), jeongeum);
-  g_signal_connect (jeongeum->settings,
-                    "changed::double-consonant-rule",
-                    G_CALLBACK (on_changed_double_consonant_rule), jeongeum);
-  g_signal_connect (jeongeum->settings,
-                    "changed::avoid-reset-in-commit-callback",
-                    G_CALLBACK (on_changed_avoid_reset_in_commit_cb), jeongeum);
-  g_signal_connect (jeongeum->settings, "changed::workaround-for-wine",
-                    G_CALLBACK (on_changed_workaround_for_wine), jeongeum);
+  g_signal_connect (hangul->settings, "changed::layout",
+                    G_CALLBACK (on_changed_layout), hangul);
+  g_signal_connect (hangul->settings, "changed::hangul-keys",
+                    G_CALLBACK (on_changed_keys), hangul);
+  g_signal_connect (hangul->settings, "changed::hanja-keys",
+                    G_CALLBACK (on_changed_keys), hangul);
+  g_signal_connect (hangul->settings, "changed::double-consonant-rule",
+                    G_CALLBACK (on_changed_double_consonant_rule), hangul);
+  g_signal_connect (hangul->settings, "changed::avoid-reset-in-commit-callback",
+                    G_CALLBACK (on_changed_avoid_reset_in_commit_cb), hangul);
+  g_signal_connect (hangul->settings, "changed::workaround-for-wine",
+                    G_CALLBACK (on_changed_workaround_for_wine), hangul);
 }
 
 static void
-aim_jeongeum_finalize (GObject *object)
+aim_libhangul_finalize (GObject *object)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
-  AimJeongeum *jeongeum = AIM_JEONGEUM (object);
+  AimLibhangul *hangul = AIM_LIBHANGUL (object);
 
-  hanja_table_delete (jeongeum->hanja_table);
-  hanja_table_delete (jeongeum->symbol_table);
-  hangul_ic_delete   (jeongeum->context);
-  g_free (jeongeum->preedit_string);
-  g_free (jeongeum->id);
-  g_free (jeongeum->en_name);
-  g_free (jeongeum->ko_name);
-  g_free (jeongeum->layout);
-  aim_key_freev (jeongeum->hangul_keys);
-  aim_key_freev (jeongeum->hanja_keys);
-  g_object_unref (jeongeum->settings);
+  hanja_table_delete (hangul->hanja_table);
+  hanja_table_delete (hangul->symbol_table);
+  hangul_ic_delete   (hangul->context);
+  g_free (hangul->preedit_string);
+  g_free (hangul->id);
+  g_free (hangul->en_name);
+  g_free (hangul->ko_name);
+  g_free (hangul->layout);
+  aim_key_freev (hangul->hangul_keys);
+  aim_key_freev (hangul->hanja_keys);
+  g_object_unref (hangul->settings);
 
-  G_OBJECT_CLASS (aim_jeongeum_parent_class)->finalize (object);
+  G_OBJECT_CLASS (aim_libhangul_parent_class)->finalize (object);
 }
 
 void
-aim_jeongeum_get_preedit_string (AimEngine  *engine,
-                                 gchar     **str,
-                                 gint       *cursor_pos)
+aim_libhangul_get_preedit_string (AimEngine  *engine,
+                                  gchar     **str,
+                                  gint       *cursor_pos)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
   g_return_if_fail (AIM_IS_ENGINE (engine));
 
-  AimJeongeum *jeongeum = AIM_JEONGEUM (engine);
+  AimLibhangul *hangul = AIM_LIBHANGUL (engine);
 
   if (str)
   {
-    if (jeongeum->preedit_string)
-      *str = g_strdup (jeongeum->preedit_string);
+    if (hangul->preedit_string)
+      *str = g_strdup (hangul->preedit_string);
     else
       *str = g_strdup ("");
   }
 
   if (cursor_pos)
   {
-    if (jeongeum->preedit_string)
-      *cursor_pos = g_utf8_strlen (jeongeum->preedit_string, -1);
+    if (hangul->preedit_string)
+      *cursor_pos = g_utf8_strlen (hangul->preedit_string, -1);
     else
       *cursor_pos = 0;
   }
 }
 
 const gchar *
-aim_jeongeum_get_id (AimEngine *engine)
+aim_libhangul_get_id (AimEngine *engine)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
   g_return_val_if_fail (AIM_IS_ENGINE (engine), NULL);
 
-  return AIM_JEONGEUM (engine)->id;
+  return AIM_LIBHANGUL (engine)->id;
 }
 
 const gchar *
-aim_jeongeum_get_name (AimEngine *engine)
+aim_libhangul_get_name (AimEngine *engine)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
   g_return_val_if_fail (AIM_IS_ENGINE (engine), NULL);
 
-  AimJeongeum *jeongeum = AIM_JEONGEUM (engine);
+  AimLibhangul *hangul = AIM_LIBHANGUL (engine);
 
-  return jeongeum->is_english_mode ? jeongeum->en_name : jeongeum->ko_name;
+  return hangul->is_english_mode ? hangul->en_name : hangul->ko_name;
 }
 
 void
-aim_jeongeum_set_english_mode (AimEngine *engine,
-                               gboolean   is_english_mode)
+aim_libhangul_set_english_mode (AimEngine *engine,
+                                gboolean   is_english_mode)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
-  AIM_JEONGEUM (engine)->is_english_mode = is_english_mode;
+  AIM_LIBHANGUL (engine)->is_english_mode = is_english_mode;
 }
 
 gboolean
-aim_jeongeum_get_english_mode (AimEngine *engine)
+aim_libhangul_get_english_mode (AimEngine *engine)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
-  AimJeongeum *jeongeum = AIM_JEONGEUM (engine);
-  return jeongeum->is_english_mode;
+  return AIM_LIBHANGUL (engine)->is_english_mode;
 }
 
 static void
-aim_jeongeum_class_init (AimJeongeumClass *class)
+aim_libhangul_class_init (AimLibhangulClass *class)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
   GObjectClass *object_class = G_OBJECT_CLASS (class);
   AimEngineClass *engine_class = AIM_ENGINE_CLASS (class);
 
-  engine_class->filter_event       = aim_jeongeum_filter_event;
-  engine_class->get_preedit_string = aim_jeongeum_get_preedit_string;
-  engine_class->reset              = aim_jeongeum_reset;
-  engine_class->focus_in           = aim_jeongeum_focus_in;
-  engine_class->focus_out          = aim_jeongeum_focus_out;
+  engine_class->filter_event       = aim_libhangul_filter_event;
+  engine_class->get_preedit_string = aim_libhangul_get_preedit_string;
+  engine_class->reset              = aim_libhangul_reset;
+  engine_class->focus_in           = aim_libhangul_focus_in;
+  engine_class->focus_out          = aim_libhangul_focus_out;
 
   engine_class->candidate_clicked  = on_candidate_clicked;
 
-  engine_class->get_id             = aim_jeongeum_get_id;
-  engine_class->get_name           = aim_jeongeum_get_name;
-  engine_class->set_english_mode   = aim_jeongeum_set_english_mode;
-  engine_class->get_english_mode   = aim_jeongeum_get_english_mode;
+  engine_class->get_id             = aim_libhangul_get_id;
+  engine_class->get_name           = aim_libhangul_get_name;
+  engine_class->set_english_mode   = aim_libhangul_set_english_mode;
+  engine_class->get_english_mode   = aim_libhangul_get_english_mode;
 
-  object_class->finalize = aim_jeongeum_finalize;
+  object_class->finalize = aim_libhangul_finalize;
 }
 
 static void
-aim_jeongeum_class_finalize (AimJeongeumClass *class)
+aim_libhangul_class_finalize (AimLibhangulClass *class)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 }
@@ -728,14 +723,14 @@ void module_load (GTypeModule *type_module)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
-  aim_jeongeum_register_type (type_module);
+  aim_libhangul_register_type (type_module);
 }
 
 GType module_get_type ()
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
-  return aim_jeongeum_get_type ();
+  return aim_libhangul_get_type ();
 }
 
 void module_unload ()

@@ -4,7 +4,7 @@ AIM is an input method framework, which provides
     * aim-daemon including XIM
 
   * Language Engines
-    * Korean: aim-jeongeum (based on libhangul)
+    * Korean: aim-libhangul (based on libhangul)
     * English: aim-english
 
   * Client Modules
@@ -29,7 +29,7 @@ Install
     sudo make update-gtk-im-cache
     sudo make update-gtk-icon-cache
 
-  * To use symbols in Jeongeum Engine
+  * To use symbols in libhangul engine
 
     wget https://raw.githubusercontent.com/choehwanjin/libhangul/master/data/hanja/mssymbol.txt
     sudo mv mssymbol.txt /usr/share/libhangul/hanja/
@@ -88,7 +88,7 @@ Architecture
                 +---------------+            +------------------+
                   |                            |
                   +- aim-english (embedded)    +- aim-candidate (gtk3)
-                  +- aim-jeongeum
+                  +- aim-libhangul
 
 
 Debugging

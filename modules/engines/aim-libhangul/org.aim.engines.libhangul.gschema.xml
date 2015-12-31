@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
-  <schema id="org.aim.engines.jeongeum"
-          path="/org/aim/engines/jeongeum/">
+  <schema id="org.aim.engines.libhangul"
+          path="/org/aim/engines/libhangul/">
     <key type="s" name="layout">
       <choices>
         <choice value='2'   /> <!-- 두벌식 자판          -->
