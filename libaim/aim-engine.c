@@ -416,6 +416,12 @@ aim_engine_get_selected_candidate_text (AimEngine *engine)
   return aim_candidate_get_selected_text (engine->priv->server->candidate);
 }
 
+gint
+aim_engine_get_selected_candidate_index (AimEngine *engine)
+{
+  return aim_candidate_get_selected_index (engine->priv->server->candidate);
+}
+
 const gchar *
 aim_engine_get_id (AimEngine *engine)
 {

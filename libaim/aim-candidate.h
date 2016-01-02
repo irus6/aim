@@ -56,6 +56,7 @@ void          aim_candidate_select_next_item      (AimCandidate  *candidate);
 void          aim_candidate_select_page_up_item   (AimCandidate  *candidate);
 void          aim_candidate_select_page_down_item (AimCandidate  *candidate);
 gchar        *aim_candidate_get_selected_text     (AimCandidate  *candidate);
+gint          aim_candidate_get_selected_index    (AimCandidate  *candidate);
 
 G_END_DECLS
 

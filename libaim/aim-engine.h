@@ -157,6 +157,7 @@ void     aim_engine_select_next_candidate_item      (AimEngine  *engine);
 void     aim_engine_select_page_up_candidate_item   (AimEngine  *engine);
 void     aim_engine_select_page_down_candidate_item (AimEngine  *engine);
 gchar   *aim_engine_get_selected_candidate_text     (AimEngine  *engine);
+gint     aim_engine_get_selected_candidate_index    (AimEngine  *engine);
 /* info */
 const gchar *aim_engine_get_id   (AimEngine *engine);
 const gchar *aim_engine_get_name (AimEngine *engine);
