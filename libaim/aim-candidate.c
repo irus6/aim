@@ -227,6 +227,13 @@ void aim_candidate_hide_window (AimCandidate *candidate)
   gtk_widget_hide (candidate->window);
 }
 
+gboolean aim_candidate_is_window_visible (AimCandidate *candidate)
+{
+  g_debug (G_STRLOC ": %s", G_STRFUNC);
+
+  return gtk_widget_is_visible (candidate->window);
+}
+
 void aim_candidate_select_previous_item (AimCandidate *candidate)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);

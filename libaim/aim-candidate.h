@@ -50,6 +50,7 @@ void          aim_candidate_update_window         (AimCandidate  *candidate,
                                                    const gchar  **strv);
 void          aim_candidate_show_window           (AimCandidate  *candidate,
                                                    AimConnection *target);
+gboolean      aim_candidate_is_window_visible     (AimCandidate  *candidate);
 void          aim_candidate_hide_window           (AimCandidate  *candidate);
 void          aim_candidate_select_previous_item  (AimCandidate  *candidate);
 void          aim_candidate_select_next_item      (AimCandidate  *candidate);

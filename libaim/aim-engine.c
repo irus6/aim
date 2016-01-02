@@ -386,6 +386,11 @@ aim_engine_hide_candidate_window (AimEngine *engine)
   aim_candidate_hide_window (engine->priv->server->candidate);
 }
 
+gboolean aim_engine_is_candidate_window_visible (AimEngine *engine)
+{
+  return aim_candidate_is_window_visible (engine->priv->server->candidate);
+}
+
 void
 aim_engine_select_previous_candidate_item (AimEngine *engine)
 {

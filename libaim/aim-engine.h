@@ -152,6 +152,7 @@ void     aim_engine_update_candidate_window         (AimEngine  *engine,
 void     aim_engine_show_candidate_window           (AimEngine  *engine,
                                                      AimConnection *target);
 void     aim_engine_hide_candidate_window           (AimEngine  *engine);
+gboolean aim_engine_is_candidate_window_visible     (AimEngine  *engine);
 void     aim_engine_select_previous_candidate_item  (AimEngine  *engine);
 void     aim_engine_select_next_candidate_item      (AimEngine  *engine);
 void     aim_engine_select_page_up_candidate_item   (AimEngine  *engine);
