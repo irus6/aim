@@ -1,3 +1,3 @@
-SUBDIRS = aim-libhangul
+SUBDIRS = aim-libhangul aim-sunpinyin
 
 DISTCLEANFILES = Makefile.in

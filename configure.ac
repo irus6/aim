@@ -42,6 +42,12 @@ PKG_CHECK_MODULES(LIBHANGUL, libhangul >= 0.0.12)
 PKG_CHECK_MODULES(X11, [x11])
 
 dnl ***************************************************************************
+dnl aim-sunpinyin
+dnl ***************************************************************************
+
+PKG_CHECK_MODULES(AIM_SUNPINYIN_DEPS, [sunpinyin-2.0 $LIBAIM_REQUIRES])
+
+dnl ***************************************************************************
 dnl  Qt
 dnl ***************************************************************************
 
@@ -156,6 +162,7 @@ AC_OUTPUT([
   modules/clients/qt5/Makefile
   modules/engines/Makefile
   modules/engines/aim-libhangul/Makefile
+  modules/engines/aim-sunpinyin/Makefile
   daemon/Makefile
   po/Makefile.in
 ])

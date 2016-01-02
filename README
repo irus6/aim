@@ -4,8 +4,9 @@ AIM is an input method framework, which provides
     * aim-daemon including XIM
 
   * Language Engines
-    * Korean: aim-libhangul (based on libhangul)
-    * English: aim-english
+    * Korean:  aim-libhangul (based on libhangul)
+    * Chinese: aim-sunpinyin (based on sunpinyin)
+    * English: aim-english (embedded)
 
   * Client Modules
     * GTK+2, GTK+3, Qt4, Qt5
@@ -89,6 +90,7 @@ Architecture
                   |                            |
                   +- aim-english (embedded)    +- aim-candidate (gtk3)
                   +- aim-libhangul
+                  +- aim-sunpinyin
 
 
 Debugging
@@ -106,6 +108,9 @@ Debugging
 
 References
 ----------
+
+  * API
+
   http://www.x.org/releases/X11R7.6/doc/libX11/specs/XIM/xim.html
   http://www.w3.org/TR/ime-api/
   https://developer.chrome.com/extensions/input_ime
@@ -113,6 +118,13 @@ References
   http://doc.qt.io/qt-4.8/qinputcontext.html
   http://doc.qt.io/qt-5/qinputmethod.html
   https://git.gnome.org/browse/gtk+
+
+  * Language Engines
+
+  https://github.com/choehwanjin/libhangul
+  https://github.com/sunpinyin/sunpinyin
+
+  * Implementations
 
   https://github.com/choehwanjin/nabi
   https://github.com/choehwanjin/imhangul
