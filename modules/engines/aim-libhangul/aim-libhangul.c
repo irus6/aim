@@ -221,7 +221,10 @@ aim_libhangul_focus_out (AimEngine *engine, AimConnection  *target)
 }
 
 static void
-on_candidate_clicked (AimEngine *engine, AimConnection *target, gchar *text)
+on_candidate_clicked (AimEngine     *engine,
+                      AimConnection *target,
+                      gchar         *text,
+                      gint           index)
 {
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
@@ -359,7 +362,7 @@ aim_libhangul_filter_event (AimEngine     *engine,
       case AIM_KEY_KP_Enter:
         {
           gchar *text = aim_engine_get_selected_candidate_text (engine);
-          on_candidate_clicked (engine, target, text);
+          on_candidate_clicked (engine, target, text, -1);
           g_free (text);
         }
         break;

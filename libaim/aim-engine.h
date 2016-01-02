@@ -94,7 +94,8 @@ struct _AimEngineClass
 
   void     (* candidate_clicked)  (AimEngine      *engine,
                                    AimConnection  *target,
-                                   gchar          *text);
+                                   gchar          *text,
+                                   gint            index);
   /* info */
   const gchar * (* get_id)        (AimEngine      *engine);
   const gchar * (* get_name)      (AimEngine      *engine);
