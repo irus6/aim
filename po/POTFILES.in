@@ -1,5 +1,4 @@
 # List of source files containing translatable strings.
 agents/app-indicator/aim-indicator.c
-agents/gnome-shell-extension/extension.js
 daemon/aim-daemon.c
 modules/clients/gtk/im-aim.c
