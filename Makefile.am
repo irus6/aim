@@ -1,4 +1,8 @@
-SUBDIRS = libaim modules daemon agents po data
+SUBDIRS = libaim modules daemon po data
+
+if ENABLE_AIM_INDICATOR
+  SUBDIRS += indicator
+endif
 
 ACLOCAL_AMFLAGS = -I m4
 

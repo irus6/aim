@@ -146,11 +146,11 @@ GOBJECT_INTROSPECTION_CHECK([0.10.1])
 
 AC_OUTPUT([
   Makefile
-  agents/Makefile
-  agents/app-indicator/Makefile
+  daemon/Makefile
   data/Makefile
   data/im-config/Makefile
   data/icons/Makefile
+  indicator/Makefile
   libaim/Makefile
   libaim/aim.pc
   modules/Makefile
@@ -161,6 +161,5 @@ AC_OUTPUT([
   modules/engines/Makefile
   modules/engines/aim-libhangul/Makefile
   modules/engines/aim-sunpinyin/Makefile
-  daemon/Makefile
   po/Makefile.in
 ])
