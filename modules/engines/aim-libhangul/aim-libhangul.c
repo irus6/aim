@@ -579,8 +579,8 @@ aim_libhangul_init (AimLibhangul *hangul)
   hangul->hanja_keys  = aim_key_newv ((const gchar **) hanja_keys);
   hangul->context = hangul_ic_new (hangul->layout);
   hangul->id      = g_strdup ("aim-libhangul");
-  hangul->en_name = g_strdup ("en");
   hangul->ko_name = g_strdup ("ko");
+  hangul->en_name = g_strdup ("ko-en");
   hangul->is_english_mode = TRUE;
   hangul->preedit_string = g_strdup ("");
   hangul->hanja_table  = hanja_table_load (NULL);

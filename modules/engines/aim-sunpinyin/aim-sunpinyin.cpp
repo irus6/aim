@@ -224,7 +224,7 @@ aim_sunpinyin_init (AimSunpinyin *pinyin)
 
   pinyin->id = g_strdup ("aim-sunpinyin");
   pinyin->zh_name = g_strdup ("zh");
-  pinyin->en_name = g_strdup ("en");
+  pinyin->en_name = g_strdup ("zh-en");
   pinyin->is_english_mode = TRUE;
   pinyin->preedit_string = g_strdup ("");
 
