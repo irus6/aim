@@ -6,7 +6,9 @@ status_scalable_icon_DATA = \
 	scalable/aim-indicator-warning.svg \
 	scalable/aim-indicator-en.svg \
 	scalable/aim-indicator-ko.svg \
-	scalable/aim-indicator-zh.svg
+	scalable/aim-indicator-ko-en.svg \
+	scalable/aim-indicator-zh.svg \
+	scalable/aim-indicator-zh-en.svg
 
 # 22x22 icons
 
